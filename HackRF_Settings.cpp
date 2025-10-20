@@ -31,8 +31,10 @@ std::set<std::string> &HackRF_getClaimedSerials(void)
 
 SoapyHackRF::SoapyHackRF( const SoapySDR::Kwargs &args )
 {
-	if (args.count("label") != 0)
-		SoapySDR_logf( SOAPY_SDR_INFO, "Opening %s...", args.at("label").c_str());
+
+  int fd = std::stoi(args.at("fd"));
+	// if (args.count("label") != 0)
+	// 	SoapySDR_logf( SOAPY_SDR_INFO, "Opening %s...", args.at("label").c_str());
 
 	_rx_stream.vga_gain=16;
 	_rx_stream.lna_gain=16;
@@ -57,9 +59,9 @@ SoapyHackRF::SoapyHackRF( const SoapySDR::Kwargs &args )
 
 	_dev		= nullptr;
 
-	if (args.count("serial") == 0)
-		throw std::runtime_error("no hackrf device matches");
-	_serial = args.at("serial");
+	// if (args.count("serial") == 0)
+	// 	throw std::runtime_error("no hackrf device matches");
+	_serial = "1";
 
 	_current_amp = 0;
 
@@ -69,7 +71,7 @@ SoapyHackRF::SoapyHackRF( const SoapySDR::Kwargs &args )
 
 	_current_bandwidth=0;
 
-	int ret = hackrf_open_by_serial(_serial.c_str(), &_dev);
+	int ret = hackrf_open_by_fd(fd, &_dev);
 	if ( ret != HACKRF_SUCCESS )
 	{
 		SoapySDR_logf( SOAPY_SDR_INFO, "Could not Open HackRF Device" );
